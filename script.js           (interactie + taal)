@@ -1,4 +1,25 @@
+const translations = {
+    nl: {
+        title: "Mijn Boekreviews",
+        timeline: "Tijdslijn",
+        reviews: "Reviews",
+        about: "Over mij"
+    },
+    en: {
+        title: "My Book Reviews",
+        timeline: "Timeline",
+        reviews: "Reviews",
+        about: "About me"
+    }
+};
+
+let currentLang = "nl";
+
 function setLang(lang) {
-    localStorage.setItem("lang", lang);
-    location.reload();
+    currentLang = lang;
+
+    document.querySelectorAll("[data-key]").forEach(el => {
+        const key = el.getAttribute("data-key");
+        el.innerText = translations[lang][key];
+    });
 }
