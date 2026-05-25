@@ -1,1 +1,8 @@
+<h1>Alle reviews</h1>
 
+<div class="post">
+    <a href="reviews/book1.html">
+        <h2>Boektitel 1</h2>
+        <p>Korte samenvatting...</p>
+    </a>
+</div>
