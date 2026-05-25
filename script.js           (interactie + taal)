@@ -1,31 +1,101 @@
-const translations = {
-    nl: {
-        title: "Mijn Boekreviews",
-        timeline: "Tijdslijn",
-        reviews: "Reviews",
-        about: "Over mij"
-    },
-    en: {
-        title: "My Book Reviews",
-        timeline: "Timeline",
-        reviews: "Reviews",
-        about: "About me"
-    }
-};
-
-let currentLang = "nl";
-
-function setLang(lang) {
-    currentLang = lang;
-
-    document.querySelectorAll("[data-key]").forEach(el => {
-        const key = el.getAttribute("data-key");
-        el.innerText = translations[lang][key];
+// 🌍 TAAL
 let currentLang = "nl";
 
 function setLang(lang) {
     currentLang = lang;
     renderAll();
 }
+
+// 🕰️ TIMELINE
+function renderTimeline(filteredBooks = books) {
+    const container = document.getElementById("timeline");
+    container.innerHTML = "";
+
+    filteredBooks
+        .sort((a, b) => a.year - b.year)
+        .forEach(book => {
+            container.innerHTML += `
+            <div class="timeline-item" onclick="openBook('${book.id}')">
+                <span>${book.year}</span>
+                <h2>${book.title[currentLang]}</h2>
+            </div>
+            `;
+        });
+}
+
+// 📖 OPEN REVIEW
+function openBook(id) {
+    const book = books.find(b => b.id === id);
+    const container = document.getElementById("content");
+
+    container.innerHTML = `
+    <div class="card">
+        <h1>${book.title[currentLang]}</h1>
+        <p>${book.author} (${book.year})</p>
+
+        <img src="${book.image}" width="200">
+
+        <div>
+            ${book.tags.map(tag =>
+                `<span class="tag" style="background:${tag.color}">
+                    ${tag.name}
+                </span>`
+            ).join("")}
+        </div>
+
+        ${renderScale("Schrijfstijl", book.scales.style)}
+        ${renderScale("Humor ↔ Serieus", book.scales.humor)}
+        ${renderScale("Toegankelijkheid", book.scales.toegankelijk)}
+
+        <p>${book.content[currentLang]}</p>
+    </div>
+    `;
+}
+
+// 📊 SCALE
+function renderScale(label, value) {
+    return `
+    <div class="scale">
+        <p>${label}</p>
+        <div class="scale-bar">
+            <div class="scale-fill" style="width:${value}%"></div>
+        </div>
+    </div>
+    `;
+}
+
+// 🏷️ FILTERS (DIT ZOCHT JE)
+function renderFilters() {
+    const container = document.getElementById("filters");
+    container.innerHTML = "";
+
+    const allTags = [...new Set(
+        books.flatMap(b => b.tags.map(t => t.name))
+    )];
+
+    allTags.forEach(tag => {
+        container.innerHTML += `
+            <button onclick="filterByTag('${tag}')">
+                ${tag}
+            </button>
+        `;
     });
 }
+
+// 🔎 FILTER FUNCTIE
+function filterByTag(tag) {
+    const filtered = books.filter(b =>
+        b.tags.some(t => t.name === tag)
+    );
+
+    renderTimeline(filtered);
+}
+
+// 🚀 START
+function renderAll() {
+    renderTimeline();
+    renderFilters();
+}
+
+// 👉 BELANGRIJK: dit start alles
+renderAll();
