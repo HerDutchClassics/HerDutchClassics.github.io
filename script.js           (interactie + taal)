@@ -21,5 +21,11 @@ function setLang(lang) {
     document.querySelectorAll("[data-key]").forEach(el => {
         const key = el.getAttribute("data-key");
         el.innerText = translations[lang][key];
+let currentLang = "nl";
+
+function setLang(lang) {
+    currentLang = lang;
+    renderAll();
+}
     });
 }
